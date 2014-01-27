@@ -142,6 +142,8 @@ for ff in ${queueFonts[@]}; do
 
 LOUT_ENTRY
 
+    sed -i 's/.null/space/' $ff.afm
+
     echo -e "Font: ${fontNames[@]:(-1)}; Tag: ${tagNames[@]:(-1)} (has been \
 installed.)" |tee -a $logfile
 done
