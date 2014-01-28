@@ -130,7 +130,7 @@ for ff in ${queueFonts[@]}; do
 
     echo "/${fontNames[@]:(-1)}						 ($ff.pfb);" >>Fontmap
     
-    if [[ -z `cat myfontdefs.ld | sed '/'"$ff"'.afm/p'` ]] ; then
+    if [[ -z `cat myfontdefs.ld | sed -n '/'"$ff"'.afm/p'` ]] ; then
         cat >>myfontdefs.ld<<LOUT_ENTRY 
 { @FontDef
       @Tag { ${tagNames[@]:(-1)} }
