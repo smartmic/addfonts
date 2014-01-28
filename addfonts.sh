@@ -145,6 +145,7 @@ LOUT_ENTRY
     fi
     sed -i 's/.null/space/' $ff.afm
 
+    echo "*****************************************************************"\
     echo -e "Font: ${fontNames[@]:(-1)}; Tag: ${tagNames[@]:(-1)} (has been \
 installed.)" |tee -a $logfile
 done
