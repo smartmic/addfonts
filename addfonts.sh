@@ -129,8 +129,9 @@ for ff in ${queueFonts[@]}; do
     tagNames=("${tagNames[@]}" "${familyNames[@]:(-1)}-${faceNames[@]:(-1)}")
 
     echo "/${fontNames[@]:(-1)}						 ($ff.pfb);" >>Fontmap
-
-    cat >>myfontdefs.ld<<LOUT_ENTRY 
+    
+    if [[ -z `cat myfontdefs.ld | sed '/'"$ff"'.afm/p'` ]] ; then
+        cat >>myfontdefs.ld<<LOUT_ENTRY 
 { @FontDef
       @Tag { ${tagNames[@]:(-1)} }
       @Family { ${familyNames[@]:(-1)} }
@@ -141,7 +142,7 @@ for ff in ${queueFonts[@]}; do
 }
 
 LOUT_ENTRY
-
+    fi
     sed -i 's/.null/space/' $ff.afm
 
     echo -e "Font: ${fontNames[@]:(-1)}; Tag: ${tagNames[@]:(-1)} (has been \
