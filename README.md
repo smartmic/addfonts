@@ -25,7 +25,8 @@ Ghostscripts Fontmap file and adds an entry for each font to a personal font
 database for Lout (default name: myfontdefs.ld). The first part may be helpful
 for LaTex and Groff users as well.
 
-The conversion is done by the external program ttf2pt1, it is up you to switch
+The conversion is done by the external program
+[ttf2pt1](http://ttf2pt1.sourceforge.net/), it is up you to switch
 to other tools, e.g. Tex distribution supply some tools for this as well. My
 goal was to achieve an installation process without any manual interference.
 Although ttf2pt1 is quite an old tool and did need some patches on my Mac OS X
@@ -42,7 +43,7 @@ there as well as all related PS font files (.afm, .pfb, Fontmap).
 To install new fonts for usage with Lout, just extract the .ttf or .oft files in
 this directory and run
 
-```./addfonts.sh```
+    ./addfonts.sh
 
 The script is quite communicative and also logs its output (and the output of
 ttf2pf1) to addfonts.log. 
