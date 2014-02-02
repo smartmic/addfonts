@@ -7,13 +7,15 @@ for the Lout typesetting system.
 
 ## Motivation
 
-Basser Lout is an excellent typesetting system, unfortunately living a shadowy
-existence. I have experience with LaTex and Groff but Lout beats them all in my
-opinion. It is very feature-rich, easy to learn and leaves a small footprint on
-your system. To typeset beautiful documents, one does not want to stick to the
-fonts supplied by Lout but needs easy and hassle-free access to all installed
-fonts. After all, typography is important for any serious author or design
-oriented individual.
+[Basser Lout](http://savannah.nongnu.org/projects/lout) is an excellent
+typesetting system, unfortunately living a shadowy existence when comparing to
+LaTex. I gained experience with LaTex and Groff, all have their strengths and
+weaknesses. If I should recommend a system to a typesetting newbie, I clearly
+would recommend Lout. It is very feature-rich, easy to learn and leaves a small
+footprint on your system.  To typeset beautiful documents, one does not want to
+stick to the fonts supplied by Lout but needs easy and hassle-free access to all
+installed fonts. After all, typography is important for any serious author or
+design oriented individual.
 
 The process to embed custom fonts into documents set by Tex, Troff or Lout is
 basically the same, you have to provide Postscript fonts.
