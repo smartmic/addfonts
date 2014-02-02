@@ -32,7 +32,7 @@ The conversion is done by the external program
 to other tools, e.g. Tex distribution supply some tools for this as well. My
 goal was to achieve an installation process without any manual interference.
 Although ttf2pt1 is quite an old tool and did need some patches on my Mac OS X
-and Linux system, it produces very nice PS fonts. It relys on the Freetype2
+and Linux system, it produces very nice PS fonts. It relies on the Freetype2
 library for conversion of TTF and OTF fonts. You can also stick to the built-in
 TTF converter, however, it will not convert OTF fonts.
 
@@ -49,3 +49,46 @@ this directory and run
 
 The script is quite communicative and also logs its output (and the output of
 ttf2pf1) to addfonts.log. 
+
+### Excursus: How to use different fonts in Lout
+
+It is quite straightforward to use a TTF/OTF font in your Lout document. Having
+run addfonts.sh, the user font database for Lout is available in the same
+font directory (myfontdefs.ld). Lout by itself needs only the .afm files, creating PS and PDF
+files with Ghostscript requires also the .pfb (binary) or .pfa (ascii) files.
+Check in myfontdefs.ld for the entry of the font(s) you want to use. The
+addfonts.log will also tell you which fonts have been installed. In your Lout
+document add the database without full path or suffix:
+
+    @Database @FontDef{ myfontdefs }
+
+Now use the new font in Lout wherever needed, here is an example of setting an
+alternative font for a report type document "globally":
+
+    @InitialFont { Minion_Pro Base 12p }
+
+The user manual is very, very helpful and well written, consult it for all about
+fonts. If you want to dive deeper, there is also an expert manual, you may give
+it a try.
+To be consistent with Louts naming, I mapped some commonly used font faces:  
+
+  * Regular --> *Base*  
+  * Italic --> *Slope*  
+
+Just make sure that you use the correct font family and face name as written in
+myfontdefs.ld.
+
+Last but not least, do not forget to tell Lout that you have a customized
+external font database when invoking:
+
+    lout -D/path/to/directory/of/database -F/path/to/directory/of/fontmetrics
+
+Remember, in my setup, I have the font metric files (.afm) and database
+(myfontdefs.ld) in the same path. That is also a registered Ghostscript font path
+containing the Fontmap file and the .pfb files. Check that the variable $GS_FONTPATH
+contains this path.  If you use different locations, you will have to modify
+addfonts.sh. Anybody who wants to implement this feature is welcome. I have it
+on my To-Do list but currently that has no priority.
+
+**Now, good luck and enjoy beautiful documents with any fonts you like!**
+
