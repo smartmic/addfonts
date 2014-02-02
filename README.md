@@ -91,10 +91,3 @@ addfonts.sh. Anybody who wants to implement this feature is welcome. I have it
 on my To-Do list but currently that has no priority.
 
 **Now, good luck and enjoy beautiful documents with any fonts you like!**
-
-## TO-DO
-
-  * Add patches for ttf2pt1 to repository
-  * Option for other converters
-  * Use different paths
-
