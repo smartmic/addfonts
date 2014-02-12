@@ -50,7 +50,40 @@ this directory and run
 The script is quite communicative and also logs its output (and the output of
 ttf2pf1) to addfonts.log. 
 
-### Excursus: How to use different fonts in Lout
+### Excursus 1: How to install ttf2pf1
+
+Choose a suitable installation directory and download the sources:
+
+    wget http://prdownloads.sourceforge.net/ttf2pt1/ttf2pt1-3.4.4.tgz
+
+Also get the header files for the Freetype 2 library (if not already installed),
+use your package manager. Here is an example for Debian systems: 
+
+    sudo apt-get install libfreetype6-dev
+
+Extract the tarball:
+
+    tar xvzf ttf2pt1-3.4.4.tgz
+
+Move the patch files which are part of the repository to the current
+directory and apply *ft.patch* at first:
+
+    mv ~/my_addfonts_path/*.patch .
+    patch ./ttf2pt1-3.4.4/ft.c < ft.patch
+
+Now adopt the Makefile in ttf2pt1-3.4.4 according your needs. You may find my
+Makefile useful, it will give you a good starting point (the original Makefile
+had a typo in the *sed* expressions):
+
+    patch ./ttf2pt1-3.4.4/Makefile < Makefile.patch
+
+Run make and make install to compile and install ttf2pt1 on your system:
+
+    cd ttf2pf1
+    make
+    sudo make install
+
+### Excursus 2: How to use different fonts in Lout
 
 It is quite straightforward to use a TTF/OTF font in your Lout document. Having
 run addfonts.sh, the user font database for Lout is available in the same
@@ -85,9 +118,11 @@ external font database when invoking:
 
 Remember, in my setup, I have the font metric files (.afm) and database
 (myfontdefs.ld) in the same path. That is also a registered Ghostscript font path
-containing the Fontmap file and the .pfb files. Check that the variable $GS_FONTPATH
-contains this path.  If you use different locations, you will have to modify
-addfonts.sh. Anybody who wants to implement this feature is welcome. I have it
-on my To-Do list but currently that has no priority.
+containing the Fontmap file and the .pfb files. Check that the variable $GS\_FONTPATH
+contains this path. Currently addfonts.sh is glued to this environment variable.
+A future release shall omit this restriction and make any search path accessible
+as defined by **-I, GS\_LIB** and **GS\_LIB\_DEFAULT** or with the **-sFONTPATH=**
+switch. Alternatively, you can modify addfonts.sh by yourself.  
 
+####
 **Now, good luck and enjoy beautiful documents with any fonts you like!**
