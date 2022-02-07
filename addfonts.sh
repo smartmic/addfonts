@@ -22,8 +22,8 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
     
-shfile=$(sed 's/^.*\///' <<< $0) 
-logfile=$(sed -e 's/\.sh/\.log/; s/^.*\///' <<< $0)
+shfile=$(sed 's/^.*\///' <<< "$0") 
+logfile=$(sed -e 's/\.sh/\.log/; s/^.*\///' <<< "$0")
 #echo $0 $shfile $logfile
 
 usage="Usage: ./$shfile 
@@ -33,30 +33,30 @@ files, converts them to Postscript Type1 Fonts and updates the Fontmap
 and output files must be in the local user ghostscript font path."
 
 echo "*****************************************************************"\
-   >>$logfile
-echo "LOG ENTRY from '$shfile'">>$logfile 
-echo -e "Run by $USER on $HOSTNAME at $(date) \n ">>$logfile 
+   >>"$logfile"
+echo "LOG ENTRY from '$shfile'">>"$logfile" 
+echo -e "Run by $USER on $HOSTNAME at $(date) \n ">>"$logfile" 
 
 if [ $# -gt 0 ] ; then 
-    echo -e "TERMINATION: Wrong number of arguments. \n" |tee -a $logfile 
+    echo -e "TERMINATION: Wrong number of arguments. \n" |tee -a "$logfile" 
     echo -e "$usage\n" 
     exit 1 
 fi
 
 if [[ "$GS_FONTPATH" != "$(pwd)" ]] ; then 
-    echo -e "TERMINATION: Wrong working directory or GS_FONTPATH not set.\n" |tee -a $logfile 
-    echo -e "Current directory: $(pwd)" |tee -a $logfile
-    echo -e "GS_FONTPATH: $GS_FONTPATH" |tee -a $logfile
+    echo -e "TERMINATION: Wrong working directory or GS_FONTPATH not set.\n" |tee -a "$logfile" 
+    echo -e "Current directory: $(pwd)" |tee -a "$logfile"
+    echo -e "GS_FONTPATH: $GS_FONTPATH" |tee -a "$logfile"
     echo -e "$usage\n" 
     exit 2 
 fi
 
 [ ! -f Fontmap ] && echo -e "INFO: Ghostscripts local 'Fontmap' file missing, will
-be created.\n" |tee -a $logfile  && touch Fontmap
+be created.\n" |tee -a "$logfile"  && touch Fontmap
 
 ls *.[oOtT][tT][fF] 2>/dev/null 1>&2 
 if [ $? -ne 0 ] ; then 
-    echo -e "TERMINATION: No True or Open Type Font files (.ttf,.otf) in directory." |tee -a $logfile 
+    echo -e "TERMINATION: No True or Open Type Font files (.ttf,.otf) in directory." |tee -a "$logfile" 
     echo -e "$usage\n" 
     exit 3 
 fi
@@ -77,16 +77,16 @@ let z=numPT1/2
 let m=numPT1%2
 
 if (( $numInstalled < z && m == 0 )) ; then
-    echo -e "WARNING: There are unregistered PS Type1 font files.\n" |tee -a $logfile
+    echo -e "WARNING: There are unregistered PS Type1 font files.\n" |tee -a "$logfile"
 elif (( $numInstalled > z || m > 0 )) ; then
     echo -e "TERMINATION: There are missing PS Type1 font files. It is recommend to
 syncronize all files and databases in this directory (delete Fontmap and rerun
-$0)\n" |tee -a $logfile
+$0)\n" |tee -a "$logfile"
     exit 4
 fi
 
 echo -e "STATUS: There are $numInstalled installed Postscript Type1 Fonts out of $numTTF
-available True Type or Open Type Fonts for user $USER. \n" >>$logfile
+available True Type or Open Type Fonts for user $USER. \n" >>"$logfile"
 
 if (( $numTTF != $numInstalled ))
 then
@@ -106,25 +106,25 @@ else
 contents of this directory or the local Fontmap file manually after the
 last run of this script. Consult the log file for history.
     
-Nothing to do. No new fonts installed." |tee -a $logfile
+Nothing to do. No new fonts installed." |tee -a "$logfile"
     exit 0
 fi
 
 for ff in ${queueFonts[@]}; do
     echo "-----------------------------------------------------------------"\
-       >>$logfile
-    echo "START OF TTF2PT1 LOG ENTRY FOR '$ff'" >>$logfile
-    echo $(date) >>$logfile
+       >>"$logfile"
+    echo "START OF TTF2PT1 LOG ENTRY FOR '$ff'" >>"$logfile"
+    echo $(date) >>"$logfile"
     echo "-----------------------------------------------------------------"\
-       >>$logfile
+       >>"$logfile"
 
-    ttf2pt1 -b $ff.[oOtT][tT][fF]  >>$logfile 2>&1
+    ttf2pt1 -b "$ff".[oOtT][tT][fF]  >>"$logfile" 2>&1
 
-    fontNames=("${fontNames[@]}" "$(grep FontName $ff.afm | cut -d' ' -f2-)")
+    fontNames=("${fontNames[@]}" "$(grep FontName "$ff".afm | cut -d' ' -f2-)")
     familyNames=("${familyNames[@]}" \
-        "$(grep FamilyName $ff.afm | cut -d' ' -f2- | sed 's/ /_/g')")
+        "$(grep FamilyName "$ff".afm | cut -d' ' -f2- | sed 's/ /_/g')")
     faceNames=("${faceNames[@]}" \
-        "$(grep Weight $ff.afm | cut -d' ' -f2- | \
+        "$(grep Weight "$ff".afm | cut -d' ' -f2- | \
         sed -e' s/^./\U&/g; s/ *//g; s/Regular/Base/i; s/Italic/Slope/i ')")
     tagNames=("${tagNames[@]}" "${familyNames[@]:(-1)}-${faceNames[@]:(-1)}")
 
@@ -145,10 +145,10 @@ LOUT_ENTRY
     fi
     
     # Correct for whitespace error in afm files
-    sed -i 's/.null/space/' $ff.afm
+    sed -i 's/.null/space/' "$ff".afm
 
     echo "*****************************************************************"\
-        >>$logfile
+        >>"$logfile"
     echo -e "Font: ${fontNames[@]:(-1)}; Tag: ${tagNames[@]:(-1)} (has been \
-installed.)" |tee -a $logfile
+installed.)" |tee -a "$logfile"
 done
