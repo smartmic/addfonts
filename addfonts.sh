@@ -54,14 +54,14 @@ fi
 [ ! -f Fontmap ] && echo -e "INFO: Ghostscripts local 'Fontmap' file missing, will
 be created.\n" |tee -a "$logfile"  && touch Fontmap
 
-ls *.[oOtT][tT][fF] 2>/dev/null 1>&2 
+ls ./*.[oOtT][tT][fF] 2>/dev/null 1>&2 
 if [ $? -ne 0 ] ; then 
     echo -e "TERMINATION: No True or Open Type Font files (.ttf,.otf) in directory." |tee -a "$logfile" 
     echo -e "$usage\n" 
     exit 3 
 fi
 
-availableTTF=( $(ls -1 *.[oOtT][tT][fF] | sed 's/\.otf\|\.ttf//i') )
+availableTTF=( $(find . -name "./*.[oOtT][tT][fF]" | sed 's/\.otf\|\.ttf//i') )
 installedPFB=( $(grep -e '^/' Fontmap | sed 's/^.*(\|\.pfb.*$//g') )
 
 typeset -i counter 
@@ -71,14 +71,14 @@ typeset -i numPFB
 numTTF=${#availableTTF[*]} 
 numInstalled=${#installedPFB[*]}
 counter=$numInstalled
-numPT1=$(ls -1 *.[aApP][fF][bBmM] 2>/dev/null | wc -l ) 
+numPT1=$(find . -name  "./*.[aApP][fF][bBmM]" 2>/dev/null | wc -l ) 
 
 let z=numPT1/2
 let m=numPT1%2
 
-if (( $numInstalled < z && m == 0 )) ; then
+if (( numInstalled < z && m == 0 )) ; then
     echo -e "WARNING: There are unregistered PS Type1 font files.\n" |tee -a "$logfile"
-elif (( $numInstalled > z || m > 0 )) ; then
+elif (( numInstalled > z || m > 0 )) ; then
     echo -e "TERMINATION: There are missing PS Type1 font files. It is recommend to
 syncronize all files and databases in this directory (delete Fontmap and rerun
 $0)\n" |tee -a "$logfile"
@@ -88,15 +88,15 @@ fi
 echo -e "STATUS: There are $numInstalled installed Postscript Type1 Fonts out of $numTTF
 available True Type or Open Type Fonts for user $USER. \n" >>"$logfile"
 
-if (( $numTTF != $numInstalled ))
+if (( numTTF != numInstalled ))
 then
-    for ii in ${availableTTF[*]}; do
-        for jj in ${installedPFB[*]}; do
+    for ii in "${availableTTF[@]}"; do
+        for jj in "${installedPFB[@]}"; do
             if [[ "$ii" != "$jj" ]]; then
                 counter=$counter-1
             fi
         done
-        if (( $counter ==  0 )) ; then
+        if (( counter ==  0 )) ; then
             queueFonts=("${queueFonts[@]}" "$ii")
         fi
        counter=$numInstalled
@@ -110,11 +110,11 @@ Nothing to do. No new fonts installed." |tee -a "$logfile"
     exit 0
 fi
 
-for ff in ${queueFonts[@]}; do
+for ff in "${queueFonts[@]}"; do
     echo "-----------------------------------------------------------------"\
        >>"$logfile"
     echo "START OF TTF2PT1 LOG ENTRY FOR '$ff'" >>"$logfile"
-    echo $(date) >>"$logfile"
+    date >>"$logfile"
     echo "-----------------------------------------------------------------"\
        >>"$logfile"
 
@@ -128,9 +128,9 @@ for ff in ${queueFonts[@]}; do
         sed -e' s/^./\U&/g; s/ *//g; s/Regular/Base/i; s/Italic/Slope/i ')")
     tagNames=("${tagNames[@]}" "${familyNames[@]:(-1)}-${faceNames[@]:(-1)}")
 
-    echo "/${fontNames[@]:(-1)}						 ($ff.pfb);" >>Fontmap
+    echo "/${fontNames[*]:(-1)}						 ($ff.pfb);" >>Fontmap
     
-    if [[ -z `cat myfontdefs.ld | sed -n '/'"$ff"'.afm/p'` ]] ; then
+    if [[ -z $(cat myfontdefs.ld | sed -n '/'"$ff"'.afm/p') ]] ; then
         cat >>myfontdefs.ld<<LOUT_ENTRY 
 { @FontDef
       @Tag { ${tagNames[@]:(-1)} }
@@ -149,6 +149,6 @@ LOUT_ENTRY
 
     echo "*****************************************************************"\
         >>"$logfile"
-    echo -e "Font: ${fontNames[@]:(-1)}; Tag: ${tagNames[@]:(-1)} (has been \
+    echo -e "Font: ${fontNames[*]:(-1)}; Tag: ${tagNames[*]:(-1)} (has been \
 installed.)" |tee -a "$logfile"
 done
